@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  wordpress:
+    image: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wp_db_user
+      WORDPRESS_DB_PASSWORD: 123
+      WORDPRESS_DB_NAME: wp_database
+    volumes:
+      - .:/var/www/html/wp-content/themes/boilerplate
+    ports:
+      - 80:80
+    depends_on:
+      - db
+
+  db:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./database/mysql:/var/lib/mysql
+      - ./database/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_DATABASE: wp_database
+      MYSQL_USER: wp_db_user
+      MYSQL_PASSWORD: 123
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
